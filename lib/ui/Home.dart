@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app/FirestoreFunction.dart';
 import 'package:notes_app/ui/component/AppBar.dart';
+import 'package:notes_app/ui/component/CustomCard.dart';
 import 'package:notes_app/ui/component/FloatingActionButton.dart';
 
 class Notes extends StatefulWidget {
@@ -9,13 +11,7 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  var firestoreDB = FirebaseFirestore.instance.collection("notes").snapshots();
+  var firestoreDB = FirestoreService().notesCollection.snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +25,7 @@ class _NotesState extends State<Notes> {
           return ListView.builder(
               itemCount: snapshot.data.docs.length,
               itemBuilder: (context, int index) {
-                return Text(snapshot.data.docs[index]['name']);
+                return CustomCard(snapshot: snapshot.data, index: index);
               });
         },
       ),
