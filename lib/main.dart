@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_app/ui/Home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +25,15 @@ class _AuthState extends State<Auth> {
   final email = TextEditingController();
   final password = TextEditingController();
 
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ["email"]);
+
   @override
   Widget build(BuildContext context) {
+    GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
     User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text("${user == null ? "OUT" : user.email}"),
+        title: Text("${googleUser == null ? "OUT" : googleUser.displayName}"),
       ),
       body: Center(
         child: Column(
@@ -48,7 +52,10 @@ class _AuthState extends State<Auth> {
                 ElevatedButton(
                     onPressed: () => _signIn(), child: Text("Sign IN")),
                 ElevatedButton(
-                    onPressed: () => _logout(), child: Text("Log Out"))
+                    onPressed: () => _logout(), child: Text("Log Out")),
+                ElevatedButton(
+                    onPressed: () => _googleUser(),
+                    child: Text("Sign in google"))
               ],
             )
           ],
@@ -74,6 +81,12 @@ class _AuthState extends State<Auth> {
 
   _logout() async {
     await FirebaseAuth.instance.signOut();
+    await _googleSignIn.signOut;
+    setState(() {});
+  }
+
+  _googleUser() async {
+    await _googleSignIn.signIn();
     setState(() {});
   }
 }
