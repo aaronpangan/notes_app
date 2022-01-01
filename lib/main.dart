@@ -80,15 +80,37 @@ class _AuthState extends State<Auth> {
   }
 
   _logout() async {
-    await FirebaseAuth.instance.signOut();
-    await _googleSignIn.disconnect();
+    await FirebaseAuth.instance
+        .signOut()
+        .then((value) => print("Logout Success"))
+        .onError((error, stackTrace) => print(error));
+    await _googleSignIn
+        .disconnect()
+        .then((value) => print("Logout Success"))
+        .onError((error, stackTrace) => print(error));
 
     setState(() {});
   }
 
   _googleUser() async {
-    await _googleSignIn.signIn();
+    // await _googleSignIn
+    //     .signIn()
+    //     .then((value) => print("Google Login Success"))
+    //     .onError((error, stackTrace) => print(error));
 
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    print(await FirebaseAuth.instance.signInWithCredential(credential));
     setState(() {});
   }
 }
