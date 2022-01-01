@@ -33,7 +33,7 @@ class _AuthState extends State<Auth> {
     User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text("${googleUser == null ? "OUT" : googleUser.displayName}"),
+        title: Text("${googleUser == null ? "OUT" : "IN"}"),
       ),
       body: Center(
         child: Column(
@@ -81,12 +81,14 @@ class _AuthState extends State<Auth> {
 
   _logout() async {
     await FirebaseAuth.instance.signOut();
-    await _googleSignIn.signOut;
+    await _googleSignIn.disconnect();
+
     setState(() {});
   }
 
   _googleUser() async {
     await _googleSignIn.signIn();
+
     setState(() {});
   }
 }
