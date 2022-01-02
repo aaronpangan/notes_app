@@ -31,6 +31,14 @@ class _AuthState extends State<Auth> {
   Widget build(BuildContext context) {
     GoogleSignInAccount? googleUser = _googleSignIn.currentUser;
     User? user = FirebaseAuth.instance.currentUser;
+
+    if (googleUser != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Notes()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("${googleUser == null ? "OUT" : "IN"}"),
@@ -111,6 +119,10 @@ class _AuthState extends State<Auth> {
     );
 
     print(await FirebaseAuth.instance.signInWithCredential(credential));
-    setState(() {});
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Notes()),
+    );
+    // setState(() {});
   }
 }
